@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">TO DoDAY</string>
+    
+    <string name="info">Info</string>
+    <string name="weather">Weather</string>
+    <string name="todo">Todo</string>
+    <string name="todo_edit">Todo Edit</string>
+    <string name="d_day">D-Day</string>
+    <string name="d_day_edit">D-Day Edit</string>
+    <string name="d_day_detail">D-Day Detail</string>
+    <string name="setting">Setting</string>
+
 </resources>
