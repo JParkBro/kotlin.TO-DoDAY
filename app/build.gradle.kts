@@ -1,9 +1,24 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 
     // Firebase
     id("com.google.gms.google-services")
+
+    // Serialization
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+}
+
+// API KEY 관리
+val properties = Properties().apply {
+    load(FileInputStream(rootProject.file("local.properties")))
+}
+fun getApiKey(propertyKey: String): String {
+    return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
 android {
@@ -21,6 +36,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "WEATHER_API_KEY", getApiKey("WEATHER_API_KEY"))
     }
 
     buildTypes {
@@ -41,6 +58,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -82,4 +100,21 @@ dependencies {
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // Material Icons
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+    // LiveData
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 }
