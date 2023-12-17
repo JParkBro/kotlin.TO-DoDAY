@@ -12,12 +12,15 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.jparkbro.tododay.ui.TododayApp
 import com.jparkbro.tododay.ui.splash.SplashViewModel
 import com.jparkbro.tododay.ui.theme.TODoDAYTheme
+import com.jparkbro.tododay.utils.LocationViewModel
 
 /*
  * Room_Inventory
@@ -31,7 +34,8 @@ import com.jparkbro.tododay.ui.theme.TODoDAYTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel : SplashViewModel by viewModels()
+    private val splashVM : SplashViewModel by viewModels()
+    private val locationVM : LocationViewModel by viewModels<LocationViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
         installSplashScreen().apply {
             setKeepOnScreenCondition() {
-                viewModel.uiState.value.appVersion
+                splashVM.uiState.value.appVersion
             }
         }
 
@@ -60,12 +64,14 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            val location by locationVM.getLocationData().observeAsState()
+
             TODoDAYTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TododayApp()
+                    TododayApp(location = location)
                 }
             }
         }

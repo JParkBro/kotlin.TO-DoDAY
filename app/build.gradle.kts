@@ -52,6 +52,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        // Calendar lib
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -68,7 +71,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
+
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
@@ -117,4 +122,11 @@ dependencies {
 
     // LiveData
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+    // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+
+    // Calendar lib
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation("com.kizitonwose.calendar:compose:2.4.1")
 }

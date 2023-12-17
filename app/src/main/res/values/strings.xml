@@ -1,13 +1,73 @@
 <resources>
-    <string name="app_name">TO DoDAY</string>
+    <string name="app_name" translatable="false">TO DoDAY</string>
     
-    <string name="info">Info</string>
-    <string name="weather">Weather</string>
-    <string name="todo">Todo</string>
-    <string name="todo_edit">Todo Edit</string>
-    <string name="d_day">D-Day</string>
-    <string name="d_day_edit">D-Day Edit</string>
-    <string name="d_day_detail">D-Day Detail</string>
-    <string name="setting">Setting</string>
+    <string name="info" translatable="false">Info</string>
+    <string name="info_first" translatable="false">Info First</string>
+    <string name="info_second" translatable="false">Info Second</string>
+    <string name="info_third" translatable="false">Info Third</string>
+
+    <string name="weather_view">날씨</string>
+
+    <string name="todo">할일</string>
+    <string name="todo_view">할일</string>
+    <string name="todo_edit" translatable="false">Todo Edit</string>
+
+    <string name="d_day">디데이</string>
+    <string name="d_day_view">디데이</string>
+    <string name="d_day_edit" translatable="false">D-Day Edit</string>
+    <string name="d_day_detail" translatable="false">D-Day Detail</string>
+
+    <string name="setting_view">설정</string>
+
+    <string name="add">추가하기</string>
+    <string name="temp" translatable="false">\u00b0C</string>
+
+    <string name="week_mode" translatable="false">Week</string>
+    <string name="month_mode" translatable="false">Month</string>
+
+    <!-- 날씨 -->
+    <string name="weather_thunderstorm">뇌우</string>
+    <string name="weather_drizzle">이슬비</string>
+    <string name="weather_rain">비</string>
+    <string name="weather_snow">눈</string>
+    <string name="weather_mist">안개</string>
+    <string name="weather_haze">실안개</string>
+    <string name="weather_smoke">연기</string>
+    <string name="weather_dust">먼지</string>
+    <string name="weather_fog">안개</string>
+    <string name="weather_sand">모래</string>
+    <string name="weather_ash">화산재</string>
+    <string name="weather_squall">돌풍</string>
+    <string name="weather_tornado">토네이도</string>
+    <string name="weather_clear">맑음</string>
+    <string name="weather_clouds">구름</string>
+    <string name="weather_default" translatable="false"> </string>
+
+
+    <!-- 요일 -->
+    <string name="day_sunday">일요일</string>
+    <string name="day_monday">월요일</string>
+    <string name="day_tuesday">화요일</string>
+    <string name="day_wednesday">수요일</string>
+    <string name="day_thursday">목요일</string>
+    <string name="day_friday">금요일</string>
+    <string name="day_saturday">토요일</string>
+    <string name="day_default" translatable="false"> </string>
+
+
+    <!-- 달 -->
+    <string name="month_january">1월</string>
+    <string name="month_february">2월</string>
+    <string name="month_march">3월</string>
+    <string name="month_april">4월</string>
+    <string name="month_may">5월</string>
+    <string name="month_june">6월</string>
+    <string name="month_july">7월</string>
+    <string name="month_august">8월</string>
+    <string name="month_september">9월</string>
+    <string name="month_october">10월</string>
+    <string name="month_november">11월</string>
+    <string name="month_december">12월</string>
+    <string name="month_default" translatable="false"> </string>
 
 </resources>

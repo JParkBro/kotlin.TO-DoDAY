@@ -16,10 +16,16 @@ class SplashViewModel : ViewModel() {
     init {
         viewModelScope.launch {
 
+            checkAppVersion()
             // TODO firebase remote config > version check
-            delay(3000)
+            delay(1000)
 
             _uiState.value.appVersion = false
         }
     }
+
+    private fun checkAppVersion() {
+
+    }
+
 }
