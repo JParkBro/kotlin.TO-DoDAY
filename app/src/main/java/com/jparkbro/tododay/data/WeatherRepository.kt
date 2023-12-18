@@ -1,8 +1,8 @@
 package com.jparkbro.tododay.data
 
-import com.jparkbro.tododay.model.FirebaseDTO
 import com.jparkbro.tododay.model.WeatherDTO
 import com.jparkbro.tododay.network.WeatherApi
+
 
 class WeatherRepository {
 

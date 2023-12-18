@@ -21,6 +21,7 @@ import com.jparkbro.tododay.ui.TododayApp
 import com.jparkbro.tododay.ui.splash.SplashViewModel
 import com.jparkbro.tododay.ui.theme.TODoDAYTheme
 import com.jparkbro.tododay.utils.LocationViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /*
  * Room_Inventory
@@ -32,6 +33,7 @@ import com.jparkbro.tododay.utils.LocationViewModel
  * ComposeInstagramClone
  */
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val splashVM : SplashViewModel by viewModels()

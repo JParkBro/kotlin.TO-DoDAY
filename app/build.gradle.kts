@@ -11,6 +11,13 @@ plugins {
 
     // Serialization
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+
+    // ksp
+    id("com.google.devtools.ksp")
+
+    // hilt
+    id("com.google.dagger.hilt.android")
+    kotlin("kapt")
 }
 
 // API KEY 관리
@@ -50,14 +57,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
 
         // Calendar lib
         isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -129,4 +136,18 @@ dependencies {
     // Calendar lib
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation("com.kizitonwose.calendar:compose:2.4.1")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.5.2")
+    ksp("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+
+    // hilt
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }

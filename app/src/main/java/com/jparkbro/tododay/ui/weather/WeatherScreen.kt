@@ -2,7 +2,6 @@ package com.jparkbro.tododay.ui.weather
 
 import android.Manifest
 import android.content.Context
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -21,10 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,16 +32,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_DENIED
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jparkbro.tododay.R
-import com.jparkbro.tododay.model.LocationDetails
 
 private const val TAG = "WEATHER_SCREEN"
 
 @Composable
 fun WeatherScreen(
     modifier: Modifier = Modifier,
-    weatherUiState: WeatherUiState
+    weatherViewModel: WeatherViewModel = hiltViewModel(),
+//    weatherUiState: WeatherUiState,
 ) {
     val context = LocalContext.current
     var isGranted by remember { mutableStateOf(false) }
@@ -55,7 +51,7 @@ fun WeatherScreen(
         DeniedPermission(modifier) { isGranted = it }
     } else {
         GrantedPermission(
-            weatherUiState = weatherUiState,
+//            weatherUiState = weatherUiState,
             context = context
         )
     }
@@ -94,7 +90,7 @@ fun DeniedPermission(
 @Composable
 fun GrantedPermission(
     modifier: Modifier = Modifier,
-    weatherUiState: WeatherUiState,
+//    weatherUiState: WeatherUiState,
     context: Context,
 ) {
     Column(
@@ -108,8 +104,8 @@ fun GrantedPermission(
             modifier = Modifier
                 .background(color = Color.Cyan)
         ) {
-            Text(text = weatherUiState.weather.temp + stringResource(id = R.string.temp))
-            Text(text = stringResource(id = weatherUiState.weather.weather))
+//            Text(text = weatherUiState.weather.temp + stringResource(id = R.string.temp))
+//            Text(text = stringResource(id = weatherUiState.weather.weather))
         }
         Box(
             modifier = Modifier
@@ -128,7 +124,7 @@ fun GrantedPermission(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
             ) {
-                Text(text = weatherUiState.weather.location)
+//                Text(text = weatherUiState.weather.location)
                 Icon(imageVector = Icons.Default.LocationOn, contentDescription = "location")
             }
         }
@@ -138,8 +134,8 @@ fun GrantedPermission(
                 .background(color = Color.Green),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = stringResource(id = weatherUiState.weather.dayOfWeek))
-            Text(text = "${stringResource(id = weatherUiState.weather.month)} ${weatherUiState.weather.day}")
+//            Text(text = stringResource(id = weatherUiState.weather.dayOfWeek))
+//            Text(text = "${stringResource(id = weatherUiState.weather.month)} ${weatherUiState.weather.day}")
         }
     }
 }

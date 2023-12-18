@@ -7,17 +7,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.jparkbro.tododay.R
 import com.jparkbro.tododay.data.WeatherRepository
 import com.jparkbro.tododay.model.LocationDetails
 import com.jparkbro.tododay.model.Weather
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 private const val TAG = "WEATHER_VIEW_MODEL"
 
-class WeatherViewModel(
-    private val repository: WeatherRepository = WeatherRepository()
+@HiltViewModel
+class WeatherViewModel @Inject constructor(
+//    private val repository: WeatherRepository
 ) : ViewModel() {
 
     private var currentLocation: LocationDetails? = null
@@ -39,35 +46,33 @@ class WeatherViewModel(
                 val dayOfWeek = localDate.dayOfWeek.toString()
                 val day = localDate.dayOfMonth.toString()
 
-                Log.d(TAG, dayOfWeek)
-                Log.d(TAG, month)
-
-                repository.getWeather(lat = it.latitude, lon = it.longitude)
-                    .let { data ->
-                        val weatherDescription = data.weather.firstOrNull()?.main ?: ""
-                        val temperature = (data.main.temp - 273.15).roundToInt().toString()
-                        val locationName = data.name
-
-                        val weatherResId = getWeatherResourceId(weatherDescription)
-                        val monthResId = getMonthResourceId(month)
-                        val dayResId = getDayResourceId(dayOfWeek)
-
-                        val weather = Weather(
-                            temp = temperature,
-                            weather = weatherResId,
-                            location = locationName,
-                            month = monthResId,
-                            dayOfWeek = dayResId,
-                            day = day,
-                        )
-
-                        uiState = uiState.copy(weather = weather)
-                    }
+//                repository.getWeather(lat = it.latitude, lon = it.longitude)
+//                    .let { data ->
+//                        val weatherDescription = data.weather.firstOrNull()?.main ?: ""
+//                        val temperature = (data.main.temp - 273.15).roundToInt().toString()
+//                        val locationName = data.name
+//
+//                        val weatherResId = getWeatherResourceId(weatherDescription)
+//                        val monthResId = getMonthResourceId(month)
+//                        val dayResId = getDayResourceId(dayOfWeek)
+//
+//                        val weather = Weather(
+//                            temp = temperature,
+//                            weather = weatherResId,
+//                            location = locationName,
+//                            month = monthResId,
+//                            dayOfWeek = dayResId,
+//                            day = day,
+//                        )
+//
+//                        uiState = uiState.copy(weather = weather)
+//                    }
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
             }
         }
     }
+
 
     private fun getWeatherResourceId(weatherCondition: String): Int {
         return when (weatherCondition) {

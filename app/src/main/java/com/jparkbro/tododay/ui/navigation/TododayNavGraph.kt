@@ -39,7 +39,7 @@ private const val TAG = "NAV_GRAPH"
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TododayNavHost(
+fun TododayNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     location: LocationDetails?,
@@ -51,18 +51,18 @@ fun TododayNavHost(
     ) {
         infoGraph(navController = navController)
         composable(route = NavigationDestination.WeatherView.route) {
-            val weatherVM: WeatherViewModel = viewModel()
-            val scope = rememberCoroutineScope()
-            location?.let { nonNullLocation ->
-                weatherVM.fetchLocationData(nonNullLocation)
-                    .apply {
-                        scope.launch {
-                            weatherVM.getWeather()
-                        }
-                    }
-            }
+//            val weatherVM: WeatherViewModel = viewModel()
+//            val scope = rememberCoroutineScope()
+//            location?.let { nonNullLocation ->
+//                weatherVM.fetchLocationData(nonNullLocation)
+//                    .apply {
+//                        scope.launch {
+//                            weatherVM.getWeather()
+//                        }
+//                    }
+//            }
             WeatherScreen(
-                weatherUiState = weatherVM.uiState
+//                weatherUiState = weatherVM.uiState
             )
         }
         todoGraph(navController = navController)
