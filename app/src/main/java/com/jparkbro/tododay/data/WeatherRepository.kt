@@ -1,18 +1,13 @@
 package com.jparkbro.tododay.data
 
 import com.jparkbro.tododay.model.WeatherDTO
-import com.jparkbro.tododay.network.WeatherApi
+import javax.inject.Inject
 
-
-class WeatherRepository {
+class WeatherRepository @Inject constructor(
+    private val weatherDataSource: WeatherDataSource
+) {
 
     suspend fun getWeather(lat: String, lon: String) : WeatherDTO {
-        return WeatherApi.retrofitService.getWeather(lat = lat, lon = lon)
+        return weatherDataSource.getWeather(lat = lat, lon = lon)
     }
-    suspend fun getFirebaseData(
-        weather: String,
-    ) {
-
-    }
-
 }

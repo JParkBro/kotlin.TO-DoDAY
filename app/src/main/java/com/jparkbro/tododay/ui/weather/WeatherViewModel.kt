@@ -24,7 +24,7 @@ private const val TAG = "WEATHER_VIEW_MODEL"
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-//    private val repository: WeatherRepository
+    private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
     private var currentLocation: LocationDetails? = null
