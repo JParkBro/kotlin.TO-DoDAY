@@ -1,4 +1,4 @@
-package com.jparkbro.tododay.data
+package com.jparkbro.tododay.data.weather
 
 import com.jparkbro.tododay.model.FirebaseDto
 import com.jparkbro.tododay.model.WeatherDTO

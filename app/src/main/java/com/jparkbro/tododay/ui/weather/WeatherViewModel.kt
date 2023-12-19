@@ -1,21 +1,17 @@
 package com.jparkbro.tododay.ui.weather
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewModelScope
 import com.jparkbro.tododay.R
-import com.jparkbro.tododay.data.WeatherRepository
+import com.jparkbro.tododay.data.weather.WeatherRepository
 import com.jparkbro.tododay.model.LocationDetails
 import com.jparkbro.tododay.model.Weather
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -27,52 +23,46 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
-    private var currentLocation: LocationDetails? = null
-
-    var uiState by mutableStateOf(WeatherUiState())
+    var uiState: WeatherUiState by mutableStateOf(WeatherUiState.Loading)
         private set
 
-    fun fetchLocationData(location: LocationDetails) {
-        currentLocation = location
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getWeather() {
-        currentLocation?.let {
+    fun getWeather(location: LocationDetails) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
+                uiState = WeatherUiState.Loading
+
                 val localDate: LocalDate = LocalDate.now()
 
                 val month = localDate.month.toString()
                 val dayOfWeek = localDate.dayOfWeek.toString()
                 val day = localDate.dayOfMonth.toString()
 
-//                repository.getWeather(lat = it.latitude, lon = it.longitude)
-//                    .let { data ->
-//                        val weatherDescription = data.weather.firstOrNull()?.main ?: ""
-//                        val temperature = (data.main.temp - 273.15).roundToInt().toString()
-//                        val locationName = data.name
-//
-//                        val weatherResId = getWeatherResourceId(weatherDescription)
-//                        val monthResId = getMonthResourceId(month)
-//                        val dayResId = getDayResourceId(dayOfWeek)
-//
-//                        val weather = Weather(
-//                            temp = temperature,
-//                            weather = weatherResId,
-//                            location = locationName,
-//                            month = monthResId,
-//                            dayOfWeek = dayResId,
-//                            day = day,
-//                        )
-//
-//                        uiState = uiState.copy(weather = weather)
-//                    }
+                weatherRepository.getWeather(lat = location.latitude, lon = location.longitude)
+                    .let { data ->
+                        val weatherDescription = data.weather.firstOrNull()?.main ?: ""
+                        val temperature = (data.main.temp - 273.15).roundToInt().toString()
+                        val locationName = data.name
+
+                        val weatherResId = getWeatherResourceId(weatherDescription)
+                        val monthResId = getMonthResourceId(month)
+                        val dayResId = getDayResourceId(dayOfWeek)
+
+                        val weather = Weather(
+                            temp = temperature,
+                            weather = weatherResId,
+                            location = locationName,
+                            month = monthResId,
+                            dayOfWeek = dayResId,
+                            day = day,
+                        )
+                        uiState = WeatherUiState.Success(weather)
+                    }
             } catch (e: Exception) {
-                Log.e(TAG, e.toString())
+                uiState = WeatherUiState.Loading
+//                uiState = WeatherUiState.Error TODO ERROR 대응 로직 추가
             }
         }
     }
-
 
     private fun getWeatherResourceId(weatherCondition: String): Int {
         return when (weatherCondition) {

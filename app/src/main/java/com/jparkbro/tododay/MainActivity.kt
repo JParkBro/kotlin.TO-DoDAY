@@ -37,7 +37,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val splashVM : SplashViewModel by viewModels()
-    private val locationVM : LocationViewModel by viewModels<LocationViewModel>()
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,14 +65,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val location by locationVM.getLocationData().observeAsState()
-
             TODoDAYTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TododayApp(location = location)
+                    TododayApp()
                 }
             }
         }

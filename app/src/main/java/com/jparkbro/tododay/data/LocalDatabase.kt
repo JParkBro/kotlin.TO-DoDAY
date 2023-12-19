@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.jparkbro.tododay.model.Todo
+import com.jparkbro.tododay.data.todo.TodoDao
+import com.jparkbro.tododay.model.TodoEntity
 
-@Database(entities = [Todo::class, /* DDay::class */], version = 1, exportSchema = false)
+@Database(entities = [TodoEntity::class, /* DDay::class */], version = 1, exportSchema = false)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 //    abstract fun dDayDao(): DDayDao

@@ -19,10 +19,12 @@ sealed class NavigationDestination(val route: String, @StringRes val resourceId:
 
     object Todo : NavigationDestination("todo", R.string.todo, Icons.Default.ChecklistRtl)
     object TodoView : NavigationDestination("todoView", R.string.todo_view, Icons.Default.ChecklistRtl)
+    object TodoEntry : NavigationDestination("todoEntry", R.string.todo_entry, null)
     object TodoEdit : NavigationDestination("todoEdit", R.string.todo_edit, null)
 
     object DDay : NavigationDestination("dday", R.string.d_day, Icons.Default.DateRange)
     object DDayView : NavigationDestination("ddayView", R.string.d_day_view, Icons.Default.DateRange)
+    object DDayEntry : NavigationDestination("ddayEntry", R.string.d_day_entry, null)
     object DDayEdit : NavigationDestination("ddayEdit", R.string.d_day_edit, null)
     object DDayDetail : NavigationDestination("ddayDetail", R.string.d_day_detail, null)
 

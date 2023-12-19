@@ -1,13 +1,13 @@
 package com.jparkbro.tododay.ui.todo
 
-import com.jparkbro.tododay.model.Todo
+import com.jparkbro.tododay.model.TodoEntity
+import com.kizitonwose.calendar.core.yearMonth
 import java.time.LocalDate
+import java.time.YearMonth
 
 data class TodoUiState(
-    val currentData: LocalDate = LocalDate.now(),
-    val selectedDate: LocalDate? = LocalDate.now(),
+    val selectedDate: LocalDate = LocalDate.now(),
     val isMonthMode: Boolean = false,
 
-    val todoList: List<Todo> = listOf(),
-
+    val todoList: List<TodoEntity> = listOf(),
 )

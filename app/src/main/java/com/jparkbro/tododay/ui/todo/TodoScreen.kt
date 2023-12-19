@@ -1,5 +1,6 @@
 package com.jparkbro.tododay.ui.todo
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -29,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jparkbro.tododay.R
 import com.jparkbro.tododay.utils.displayText
 import com.jparkbro.tododay.utils.rememberFirstVisibleMonthAfterScroll
@@ -79,6 +82,7 @@ private const val TAG = "TODO_SCREEN"
 fun TodoScreen(
     adjacentMonths: Long = 100,
     navigateToItemEdit: () -> Unit,
+    todoViewModel: TodoViewModel = hiltViewModel()
 ) {
     val currentDate = remember { LocalDate.now() }
     val currentMonth = remember(currentDate) { currentDate.yearMonth }
@@ -86,9 +90,7 @@ fun TodoScreen(
     val endMonth = remember(currentDate) { currentMonth.plusMonths(adjacentMonths) }
     val daysOfWeek = remember { daysOfWeek() }
 
-    var isWeekMode by remember { mutableStateOf(false) }
-
-    var selectedDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
+    val uiState = todoViewModel.uiState
 
     Column(
         modifier = Modifier
@@ -112,26 +114,24 @@ fun TodoScreen(
                 .background(color = MaterialTheme.colorScheme.primaryContainer)
         ) {
             CalendarTitle(
-                isWeekMode = isWeekMode,
-                weekModeToggled = { newWeekMode ->
-                    isWeekMode = newWeekMode
-                },
+                isMonthMode = uiState.isMonthMode,
+                monthModeToggled = { todoViewModel.toggleMonthMode() },
                 monthState = monthState,
                 weekState = weekState,
-                selectedDate = selectedDate,
+                selectedDate = uiState.selectedDate,
             )
             CalendarHeader(daysOfWeek = daysOfWeek)
 
-            val monthCalendarAlpha by animateFloatAsState(if (isWeekMode) 0f else 1f, label = "")
-            val weekCalendarAlpha by animateFloatAsState(if (isWeekMode) 1f else 0f, label = "")
+            val monthCalendarAlpha by animateFloatAsState(if (uiState.isMonthMode) 1f else 0f, label = "")
+            val weekCalendarAlpha by animateFloatAsState(if (uiState.isMonthMode) 0f else 1f, label = "")
             var weekCalendarSize by remember { mutableStateOf(DpSize.Zero) }
             val visibleMonth = rememberFirstVisibleMonthAfterScroll(monthState)
             val weeksInVisibleMonth = visibleMonth.weekDays.count()
             val monthCalendarHeight by animateDpAsState(
-                if (isWeekMode) {
-                    weekCalendarSize.height
-                } else {
+                if (uiState.isMonthMode) {
                     weekCalendarSize.height * weeksInVisibleMonth
+                } else {
+                    weekCalendarSize.height
                 },
                 tween(durationMillis = 300), label = "",
             )
@@ -142,17 +142,18 @@ fun TodoScreen(
                     modifier = Modifier
                         .height(monthCalendarHeight)
                         .alpha(monthCalendarAlpha)
-                        .zIndex(if (isWeekMode) 0f else 1f),
+                        .zIndex(if (uiState.isMonthMode) 1f else 0f),
                     state = monthState,
                     dayContent = { day ->
                         val isSelectable = day.position == DayPosition.MonthDate
                         Day(
                             day.date,
-                            isSelected = selectedDate == day.date,
-                            isSelectable = isSelectable && day.date != selectedDate
-                        ) { day ->
-                            selectedDate = if (selectedDate == day) null else day
-                        }
+                            isSelected = uiState.selectedDate == day.date,
+                            isSelectable = isSelectable && day.date != uiState.selectedDate,
+                            onClick = { date ->
+                                todoViewModel.selectDate(date)
+                            }
+                        )
                     },
                 )
                 WeekCalendar(
@@ -165,17 +166,18 @@ fun TodoScreen(
                             }
                         }
                         .alpha(weekCalendarAlpha)
-                        .zIndex(if (isWeekMode) 1f else 0f),
+                        .zIndex(if (uiState.isMonthMode) 0f else 1f),
                     state = weekState,
                     dayContent = { day ->
                         val isSelectable = day.position == WeekDayPosition.RangeDate
                         Day(
                             day.date,
-                            isSelected = selectedDate == day.date,
-                            isSelectable = isSelectable && day.date != selectedDate
-                        ) { day ->
-                            selectedDate = if (selectedDate == day) null else day
-                        }
+                            isSelected = uiState.selectedDate == day.date,
+                            isSelectable = isSelectable && day.date != uiState.selectedDate,
+                            onClick = { date ->
+                                todoViewModel.selectDate(date)
+                            }
+                        )
                     },
                 )
             }
@@ -195,16 +197,14 @@ fun TodoScreen(
 
 @Composable
 private fun CalendarTitle(
-    isWeekMode: Boolean,
-    weekModeToggled: (Boolean) -> Unit,
+    isMonthMode: Boolean,
+    monthModeToggled: () -> Unit,
     monthState: CalendarState,
     weekState: WeekCalendarState,
-    selectedDate: LocalDate?,
+    selectedDate: LocalDate,
 ) {
     val visibleMonth = rememberFirstVisibleMonthAfterScroll(monthState)
     val visibleWeek = rememberFirstVisibleWeekAfterScroll(weekState)
-
-    val coroutineScope = rememberCoroutineScope()
 
     Row(
         modifier = Modifier
@@ -214,37 +214,32 @@ private fun CalendarTitle(
         verticalAlignment = Alignment.CenterVertically
     ) {
         MonthAndWeekCalendarTitle(
-            isWeekMode = isWeekMode,
-            currentMonth = if (isWeekMode) visibleWeek.days.first().date.yearMonth else visibleMonth.yearMonth,
+            isMonthMode = isMonthMode,
+            currentMonth = if (isMonthMode) visibleMonth.yearMonth else visibleWeek.days.first().date.yearMonth,
             monthState = monthState,
             weekState = weekState,
         )
         WeekModeToggle(
             modifier = Modifier,
-            isWeekMode = isWeekMode,
-        ) { weekMode ->
-            coroutineScope.launch {
-                if (weekMode) {
-                    if (selectedDate != null) {
-                        weekState.scrollToWeek(selectedDate)
-                        weekState.animateScrollToWeek(selectedDate)
-                    }
-                } else {
-                    if (selectedDate != null) {
-                        val targetMonth = selectedDate.yearMonth
-                        monthState.scrollToMonth(targetMonth)
-                        monthState.animateScrollToMonth(targetMonth)
-                    }
-                }
-                weekModeToggled(weekMode)
-            }
+            isMonthMode = isMonthMode,
+            monthModeToggled = { monthModeToggled() }
+        )
+    }
+    LaunchedEffect(isMonthMode) {
+        if (isMonthMode) {
+            val targetMonth = selectedDate.yearMonth
+            monthState.scrollToMonth(targetMonth)
+            monthState.animateScrollToMonth(targetMonth)
+        } else {
+            weekState.scrollToWeek(selectedDate)
+            weekState.animateScrollToWeek(selectedDate)
         }
     }
 }
 
 @Composable
 fun MonthAndWeekCalendarTitle(
-    isWeekMode: Boolean,
+    isMonthMode: Boolean,
     currentMonth: YearMonth,
     monthState: CalendarState,
     weekState: WeekCalendarState,
@@ -255,23 +250,23 @@ fun MonthAndWeekCalendarTitle(
         currentMonth = currentMonth,
         goToPrevious = {
             coroutineScope.launch {
-                if (isWeekMode) {
-                    val targetDate = weekState.firstVisibleWeek.days.first().date.minusDays(1)
-                    weekState.animateScrollToWeek(targetDate)
-                } else {
+                if (isMonthMode) {
                     val targetMonth = monthState.firstVisibleMonth.yearMonth.previousMonth
                     monthState.animateScrollToMonth(targetMonth)
+                } else {
+                    val targetDate = weekState.firstVisibleWeek.days.first().date.minusDays(1)
+                    weekState.animateScrollToWeek(targetDate)
                 }
             }
         },
         goToNext = {
             coroutineScope.launch {
-                if (isWeekMode) {
-                    val targetDate = weekState.firstVisibleWeek.days.last().date.plusDays(1)
-                    weekState.animateScrollToWeek(targetDate)
-                } else {
+                if (isMonthMode) {
                     val targetMonth = monthState.firstVisibleMonth.yearMonth.nextMonth
                     monthState.animateScrollToMonth(targetMonth)
+                } else {
+                    val targetDate = weekState.firstVisibleWeek.days.last().date.plusDays(1)
+                    weekState.animateScrollToWeek(targetDate)
                 }
             }
         },
@@ -279,7 +274,9 @@ fun MonthAndWeekCalendarTitle(
 }
 
 @Composable
-fun CalendarHeader(daysOfWeek: List<DayOfWeek>) {
+fun CalendarHeader(
+    daysOfWeek: List<DayOfWeek>
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -330,22 +327,22 @@ fun Day(
 @Composable
 fun WeekModeToggle(
     modifier: Modifier,
-    isWeekMode: Boolean,
-    weekModeToggled: (isWeekMode: Boolean) -> Unit,
+    isMonthMode: Boolean,
+    monthModeToggled: () -> Unit,
 ) {
     Row(
         modifier = modifier
             .clip(MaterialTheme.shapes.small)
-            .clickable { weekModeToggled(!isWeekMode) },
+            .clickable { monthModeToggled() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
         Checkbox(
-            checked = isWeekMode,
-            onCheckedChange = null, // Check is handled by parent.
+            checked = isMonthMode,
+            onCheckedChange = null,
             colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
         )
-        Text(text = stringResource(R.string.week_mode))
+        Text(text = stringResource(R.string.month_mode))
     }
 }
 
@@ -361,6 +358,8 @@ fun SimpleCalendarTitle(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CalendarNavigationIcon(
+            modifier = Modifier
+                .fillMaxHeight(),
             icon = Icons.Default.KeyboardArrowLeft,
             contentDescription = "Previous",
             onClick = goToPrevious,
@@ -374,6 +373,8 @@ fun SimpleCalendarTitle(
             fontWeight = FontWeight.Medium,
         )
         CalendarNavigationIcon(
+            modifier = Modifier
+                .fillMaxHeight(),
             icon = Icons.Default.KeyboardArrowRight,
             contentDescription = "Next",
             onClick = goToNext,
@@ -382,23 +383,25 @@ fun SimpleCalendarTitle(
 }
 
 @Composable
-private fun CalendarNavigationIcon(
+fun CalendarNavigationIcon(
+    modifier: Modifier = Modifier,
     icon: ImageVector,
     contentDescription: String,
-    onClick: () -> Unit,
-) = Box(
-    modifier = Modifier
-        .fillMaxHeight()
-        .aspectRatio(1f)
-        .clip(shape = CircleShape)
-        .clickable(role = Role.Button, onClick = onClick),
+    onClick: () -> Unit
 ) {
-    Icon(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp)
-            .align(Alignment.Center),
-        imageVector = icon,
-        contentDescription = contentDescription,
-    )
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(shape = CircleShape)
+            .clickable(role = Role.Button, onClick = onClick)
+    ) {
+        Icon(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp)
+                .align(Alignment.Center),
+            imageVector = icon,
+            contentDescription = contentDescription
+        )
+    }
 }

@@ -25,7 +25,6 @@ private const val TAG = "TO_DO_DAY_APP"
 fun TododayApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    location: LocationDetails?
 ) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -44,7 +43,6 @@ fun TododayApp(
         TododayNavGraph(
             navController = navController,
             modifier = Modifier.padding(innerPadding),
-            location = location,
         )
     }
 }

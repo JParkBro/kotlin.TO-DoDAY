@@ -10,20 +10,32 @@
 
     <string name="todo">할일</string>
     <string name="todo_view">할일</string>
-    <string name="todo_edit" translatable="false">Todo Edit</string>
+    <string name="todo_entry" translatable="false">Add Todo</string>
+    <string name="todo_edit" translatable="false">Edit Todo</string>
 
     <string name="d_day">디데이</string>
     <string name="d_day_view">디데이</string>
-    <string name="d_day_edit" translatable="false">D-Day Edit</string>
+    <string name="d_day_entry" translatable="false">Add D-Day</string>
+    <string name="d_day_edit" translatable="false">Edit D-Day</string>
     <string name="d_day_detail" translatable="false">D-Day Detail</string>
 
     <string name="setting_view">설정</string>
 
-    <string name="add">추가하기</string>
     <string name="temp" translatable="false">\u00b0C</string>
+
+    <string name="add">추가하기</string>
+    <string name="title">제목</string>
+    <string name="date">날짜</string>
+    <string name="start_time">시작시간</string>
+    <string name="end_time">종료시간</string>
+    <string name="description">내용</string>
+
 
     <string name="week_mode" translatable="false">Week</string>
     <string name="month_mode" translatable="false">Month</string>
+
+    <string name="loading" translatable="false">Loading</string>
+    <string name="back_button" translatable="false">Back</string>
 
     <!-- 날씨 -->
     <string name="weather_thunderstorm">뇌우</string>

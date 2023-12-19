@@ -9,9 +9,13 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.LiveData
 import com.google.android.gms.location.LocationServices
 import com.jparkbro.tododay.model.LocationDetails
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 private const val TAG = "LOCATION_LIVE_DATA"
-class LocationLiveData(var context: Context) : LiveData<LocationDetails>() {
+class LocationLiveData @Inject constructor(
+    @ApplicationContext private val context: Context
+) : LiveData<LocationDetails>() {
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     override fun onActive() {

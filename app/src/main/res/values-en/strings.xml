@@ -9,6 +9,11 @@
     <string name="add">Add</string>
 
     <!-- 날씨 -->
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="description">Description</string>
     <string name="weather_thunderstorm">Thunderstorm</string>
     <string name="weather_drizzle">Drizzle</string>
     <string name="weather_rain">Rain</string>
