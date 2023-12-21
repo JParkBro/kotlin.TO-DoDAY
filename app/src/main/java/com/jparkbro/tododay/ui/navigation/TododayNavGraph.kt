@@ -4,14 +4,17 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.jparkbro.tododay.R
 import com.jparkbro.tododay.ui.dday.DDayDetailScreen
 import com.jparkbro.tododay.ui.dday.DDayEditScreen
 import com.jparkbro.tododay.ui.dday.DDayScreen
@@ -115,13 +118,15 @@ fun NavGraphBuilder.todoGraph(navController: NavController) {
     navigation(startDestination = NavigationDestination.TodoView.route, route= NavigationDestination.Todo.route) {
         composable(route = NavigationDestination.TodoView.route) {
             TodoScreen(
-                navigateToItemEdit = { navController.navigate(NavigationDestination.TodoEdit.route) }
+                navigateToTodoEdit = { navController.navigate(NavigationDestination.TodoEntry.route) }
             )
         }
-        composable(route = NavigationDestination.TodoEdit.route) {
+        composable(route = NavigationDestination.TodoEntry.route) {
             TodoEntryScreen(
+                modifier = Modifier.fillMaxSize(),
+                title = stringResource(id = R.string.todo_entry),
                 navigateBack = { navController.popBackStack() },
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
             )
         }
     }

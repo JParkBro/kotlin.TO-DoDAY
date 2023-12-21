@@ -37,6 +37,8 @@
     <string name="loading" translatable="false">Loading</string>
     <string name="back_button" translatable="false">Back</string>
 
+    <string name="no_item_description" translatable="false">TODAY NO TODO</string>
+
     <!-- 날씨 -->
     <string name="weather_thunderstorm">뇌우</string>
     <string name="weather_drizzle">이슬비</string>

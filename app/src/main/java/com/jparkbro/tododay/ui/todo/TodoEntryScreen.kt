@@ -1,163 +1,89 @@
 package com.jparkbro.tododay.ui.todo
 
-import androidx.compose.foundation.background
+import android.app.DatePickerDialog
+import android.content.Context
+import android.widget.DatePicker
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jparkbro.tododay.R
 import com.jparkbro.tododay.model.Todo
 import com.jparkbro.tododay.ui.common.TododayTopAppBar
+import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoEntryScreen(
     modifier: Modifier = Modifier,
+    title: String,
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
     viewModel: TodoEntryViewModel = hiltViewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
+
     Scaffold(
-        modifier = modifier
-            .fillMaxSize(),
-        containerColor = Color.Yellow,
+        modifier = modifier,
         topBar = {
             TododayTopAppBar(
-                title = stringResource(id = R.string.todo_edit),
+                title = title,
                 canNavigateBack = canNavigateBack,
                 navigateUp = onNavigateUp
             )
         }
     ) { innerPadding ->
-        TodoEntryBody(
+        TodoManageBody(
             modifier = Modifier
                 .padding(innerPadding)
-        )
-    }
-}
-
-@Composable
-fun TodoEntryBody(
-    modifier: Modifier = Modifier,
-//    todoUiState: TodoUiState,
-//    onTodoValueChange: (Todo) -> Unit,
-//    onSaveClick: () -> Unit,
-) {
-    Column(
-        modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large))
-    ) {
-        TodoInputForm(
-            todo = Todo()
-        )
-        Button(
-            onClick = { /*TODO*/ },
-//            onClick = onSaveClick,
-//            enabled = todoUiState.isEntryValid,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(text = stringResource(id = R.string.add))
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TodoInputForm(
-    modifier: Modifier = Modifier,
-    todo: Todo,
-//    onValueChange: (Todo) -> Unit = {},
-    enabled: Boolean = true,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-    ) {
-        OutlinedTextField(
-            modifier = Modifier
                 .fillMaxWidth(),
-            value = todo.title,
-            onValueChange = { },
-            label = { Text(text = stringResource(id = R.string.title)) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
-            enabled = enabled,
-            singleLine = true,
-        )
-        // TODO Date Picker 로 수정
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = todo.date,
-            onValueChange = { },
-            label = { Text(text = stringResource(id = R.string.title)) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
-            enabled = enabled,
-            singleLine = true,
-        )
-
-        // TODO Time Picker 로 수정
-        Row(
-
-        ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = todo.startTime,
-                onValueChange = { },
-                label = { Text(text = stringResource(id = R.string.title)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-                enabled = enabled,
-                singleLine = true,
-            )
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = todo.endTime,
-                onValueChange = { },
-                label = { Text(text = stringResource(id = R.string.title)) },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-                enabled = enabled,
-                singleLine = true,
-            )
-        }
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = todo.description,
-            onValueChange = { },
-            label = { Text(text = stringResource(id = R.string.description)) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
-            enabled = enabled,
-            singleLine = true,
+            todoUiState = viewModel.uiState,
+            onTodoValueChange = viewModel::updateUiState,
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.insertTodo()
+                    navigateBack()
+                }
+            },
+            focusManager = focusManager,
         )
     }
 }
