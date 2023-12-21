@@ -58,21 +58,19 @@ fun TodoBody(
     todoList: List<TodoEntity>,
 //    onTodoClick: (Int) -> Unit,
 ) {
-    Column {
-        if (todoList.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_item_description),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
-        } else {
-            TodoList(
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                todoList = todoList,
+    if (todoList.isEmpty()) {
+        Text(
+            text = stringResource(R.string.no_item_description),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge
+        )
+    } else {
+        TodoList(
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
+            todoList = todoList,
 //                onTodoClick = { onTodoClick(it.id) },
-            )
-        }
+        )
     }
 }
 @Composable

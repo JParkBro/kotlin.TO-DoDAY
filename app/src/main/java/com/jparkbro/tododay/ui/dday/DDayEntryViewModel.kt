@@ -1,0 +1,12 @@
+package com.jparkbro.tododay.ui.dday
+
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class DDayEntryViewModel @Inject constructor(
+
+) : ViewModel() {
+
+}

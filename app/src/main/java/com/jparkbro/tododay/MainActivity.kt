@@ -31,6 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
  * Network_Amphibians
  * Coroutine_RaceTracker
  * ComposeInstagramClone
+ * TODO Info UI 수정 / Weather UI 수정, Firebase data 추가 / Todo UI 수정, Edit View VIewModel 개발 /
+ * TODO D-Day UI 수정, Edit View ViewModel 개발 / Setting 개발
  */
 
 @AndroidEntryPoint

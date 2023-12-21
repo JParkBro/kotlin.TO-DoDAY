@@ -17,6 +17,7 @@ import androidx.navigation.navigation
 import com.jparkbro.tododay.R
 import com.jparkbro.tododay.ui.dday.DDayDetailScreen
 import com.jparkbro.tododay.ui.dday.DDayEditScreen
+import com.jparkbro.tododay.ui.dday.DDayEntryScreen
 import com.jparkbro.tododay.ui.dday.DDayScreen
 import com.jparkbro.tododay.ui.info.InfoScreenFirst
 import com.jparkbro.tododay.ui.info.InfoScreenSecond
@@ -37,7 +38,7 @@ fun TododayNavGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavigationDestination.Todo.route, // TODO Preference 에 Info 봤는지 추가, 봤으면 Weather 화면으로 바로 이동
+        startDestination = NavigationDestination.DDay.route, // TODO Preference 에 Info 봤는지 추가, 봤으면 Weather 화면으로 바로 이동
     ) {
         infoGraph(navController = navController)
         composable(route = NavigationDestination.WeatherView.route) { WeatherScreen() }
@@ -135,10 +136,16 @@ fun NavGraphBuilder.todoGraph(navController: NavController) {
 fun NavGraphBuilder.ddayGraph(navController: NavController) {
     navigation(startDestination = NavigationDestination.DDayView.route, route= NavigationDestination.DDay.route) {
         composable(route = NavigationDestination.DDayView.route) {
-            DDayScreen()
+            DDayScreen(
+                navigateToDDayEdit = { navController.navigate(NavigationDestination.DDayEntry.route) }
+            )
         }
-        composable(route = NavigationDestination.DDayEdit.route) {
-            DDayEditScreen()
+        composable(route = NavigationDestination.DDayEntry.route) {
+            DDayEntryScreen(
+                modifier = Modifier.fillMaxSize(),
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() },
+            )
         }
         composable(route = NavigationDestination.DDayDetail.route) {
             DDayDetailScreen()
