@@ -56,7 +56,7 @@ private const val TAG = "TODO_COMPONENT"
 fun TodoBody(
     modifier: Modifier = Modifier,
     todoList: List<TodoEntity>,
-//    onTodoClick: (Int) -> Unit,
+    onTodoClick: (Int) -> Unit,
 ) {
     if (todoList.isEmpty()) {
         Text(
@@ -66,10 +66,10 @@ fun TodoBody(
         )
     } else {
         TodoList(
-            modifier = Modifier
+            modifier = modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
             todoList = todoList,
-//                onTodoClick = { onTodoClick(it.id) },
+            onTodoClick = { onTodoClick(it.id) },
         )
     }
 }
@@ -77,7 +77,7 @@ fun TodoBody(
 private fun TodoList(
     modifier: Modifier = Modifier,
     todoList: List<TodoEntity>,
-//    onTodoClick: (TodoEntity) -> Unit,
+    onTodoClick: (TodoEntity) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -85,8 +85,8 @@ private fun TodoList(
         items(items = todoList, key = { it.id }) { todo ->
             TodoItem(
                 modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_small)),
-//                    .clickable { onTodoClick(todo) },
+                    .padding(dimensionResource(id = R.dimen.padding_small))
+                    .clickable { onTodoClick(todo) },
                 todo = todo,
             )
         }
@@ -155,7 +155,7 @@ fun TodoManageBody(
             enabled = todoUiState.isEntryValid,
             shape = MaterialTheme.shapes.small,
         ) {
-            Text(text = stringResource(id = R.string.add))
+            Text(text = stringResource(id = R.string.save))
         }
     }
 }

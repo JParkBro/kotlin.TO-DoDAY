@@ -1,6 +1,5 @@
 package com.jparkbro.tododay.data.weather
 
-import com.jparkbro.tododay.data.weather.WeatherDataSource
 import com.jparkbro.tododay.model.WeatherDTO
 import javax.inject.Inject
 

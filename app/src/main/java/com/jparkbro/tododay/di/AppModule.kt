@@ -87,7 +87,4 @@ class AppModule {
     fun providesTodoRepository(todoDao: TodoDao) : TodoRepository {
         return TodoRepository(todoDao)
     }
-
-
-
 }

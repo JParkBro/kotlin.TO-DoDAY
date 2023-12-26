@@ -9,6 +9,7 @@
     <string name="add">Add</string>
 
     <!-- 날씨 -->
+    <string name="save">SAVE</string>
     <string name="title">Title</string>
     <string name="date">Date</string>
     <string name="start_time">Start Time</string>

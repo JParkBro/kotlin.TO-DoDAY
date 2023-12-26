@@ -11,8 +11,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.jparkbro.tododay.R
 import com.jparkbro.tododay.ui.dday.DDayDetailScreen
@@ -23,6 +25,7 @@ import com.jparkbro.tododay.ui.info.InfoScreenFirst
 import com.jparkbro.tododay.ui.info.InfoScreenSecond
 import com.jparkbro.tododay.ui.info.InfoScreenThird
 import com.jparkbro.tododay.ui.setting.SettingScreen
+import com.jparkbro.tododay.ui.todo.TodoEditScreen
 import com.jparkbro.tododay.ui.todo.TodoEntryScreen
 import com.jparkbro.tododay.ui.todo.TodoScreen
 import com.jparkbro.tododay.ui.weather.WeatherScreen
@@ -38,22 +41,22 @@ fun TododayNavGraph(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = NavigationDestination.DDay.route, // TODO Preference 에 Info 봤는지 추가, 봤으면 Weather 화면으로 바로 이동
+        startDestination = TododayDestination.DDay.route, // TODO Preference 에 Info 봤는지 추가, 봤으면 Weather 화면으로 바로 이동
     ) {
         infoGraph(navController = navController)
-        composable(route = NavigationDestination.WeatherView.route) { WeatherScreen() }
+        composable(route = TododayDestination.WeatherView.route) { WeatherScreen() }
         todoGraph(navController = navController)
         ddayGraph(navController = navController)
-        composable(route = NavigationDestination.SettingView.route) { SettingScreen() }
+        composable(route = TododayDestination.SettingView.route) { SettingScreen() }
     }
 }
 
 fun NavGraphBuilder.infoGraph(navController: NavController) {
-    navigation(startDestination = NavigationDestination.InfoFirst.route, route = NavigationDestination.Info.route) {
+    navigation(startDestination = TododayDestination.InfoFirst.route, route = TododayDestination.Info.route) {
         composable(
-            route = NavigationDestination.InfoFirst.route,
+            route = TododayDestination.InfoFirst.route,
             enterTransition = {
-                if (initialState.destination.route == NavigationDestination.InfoFirst.route) {
+                if (initialState.destination.route == TododayDestination.InfoFirst.route) {
                     slideInHorizontally { it }
                 } else {
                     slideInHorizontally { -it }
@@ -64,20 +67,20 @@ fun NavGraphBuilder.infoGraph(navController: NavController) {
             }
         ) {
             InfoScreenFirst(
-                navigateToNext = { navController.navigate(NavigationDestination.InfoSecond.route) { popUpTo(0) } }
+                navigateToNext = { navController.navigate(TododayDestination.InfoSecond.route) { popUpTo(0) } }
             )
         }
         composable(
-            route = NavigationDestination.InfoSecond.route,
+            route = TododayDestination.InfoSecond.route,
             enterTransition = {
-                if (initialState.destination.route == NavigationDestination.InfoFirst.route) {
+                if (initialState.destination.route == TododayDestination.InfoFirst.route) {
                     slideInHorizontally { it }
                 } else {
                     slideInHorizontally { -it }
                 }
             },
             exitTransition = {
-                if (targetState.destination.route == NavigationDestination.InfoThird.route) {
+                if (targetState.destination.route == TododayDestination.InfoThird.route) {
                     slideOutHorizontally { -it }
                 } else {
                     slideOutHorizontally { it }
@@ -85,22 +88,22 @@ fun NavGraphBuilder.infoGraph(navController: NavController) {
             }
         ) {
             InfoScreenSecond(
-                navigateToNext = { navController.navigate(NavigationDestination.InfoThird.route) { popUpTo(0) } },
-                navigateToBefore = { navController.navigate(NavigationDestination.InfoFirst.route) { popUpTo(0) } }
+                navigateToNext = { navController.navigate(TododayDestination.InfoThird.route) { popUpTo(0) } },
+                navigateToBefore = { navController.navigate(TododayDestination.InfoFirst.route) { popUpTo(0) } }
 
             )
         }
         composable(
-            route = NavigationDestination.InfoThird.route,
+            route = TododayDestination.InfoThird.route,
             enterTransition = {
-                if (initialState.destination.route == NavigationDestination.InfoSecond.route) {
+                if (initialState.destination.route == TododayDestination.InfoSecond.route) {
                     slideInHorizontally { it }
                 } else {
                     slideInHorizontally { -it }
                 }
             },
             exitTransition = {
-                if (targetState.destination.route == NavigationDestination.WeatherView.route) {
+                if (targetState.destination.route == TododayDestination.WeatherView.route) {
                     slideOutHorizontally { -it }
                 } else {
                     slideOutHorizontally { it }
@@ -108,24 +111,38 @@ fun NavGraphBuilder.infoGraph(navController: NavController) {
             }
         ) {
             InfoScreenThird(
-                navigateToNext = { navController.navigate(NavigationDestination.WeatherView.route) { popUpTo(0) } },
-                navigateToBefore = { navController.navigate(NavigationDestination.InfoSecond.route) { popUpTo(0) } }
+                navigateToNext = { navController.navigate(TododayDestination.WeatherView.route) { popUpTo(0) } },
+                navigateToBefore = { navController.navigate(TododayDestination.InfoSecond.route) { popUpTo(0) } }
             )
         }
     }
 }
 
 fun NavGraphBuilder.todoGraph(navController: NavController) {
-    navigation(startDestination = NavigationDestination.TodoView.route, route= NavigationDestination.Todo.route) {
-        composable(route = NavigationDestination.TodoView.route) {
+    navigation(startDestination = TododayDestination.TodoView.route, route= TododayDestination.Todo.route) {
+        composable(route = TododayDestination.TodoView.route) {
             TodoScreen(
-                navigateToTodoEdit = { navController.navigate(NavigationDestination.TodoEntry.route) }
+                navigateToTodoEdit = { navController.navigate(TododayDestination.TodoEntry.route) },
+                navigateToTodoUpdate = {
+                    navController.navigate("${TododayDestination.TodoEdit.route}/$it")
+                }
             )
         }
-        composable(route = NavigationDestination.TodoEntry.route) {
+        composable(route = TododayDestination.TodoEntry.route) {
             TodoEntryScreen(
                 modifier = Modifier.fillMaxSize(),
                 title = stringResource(id = R.string.todo_entry),
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() },
+            )
+        }
+        composable(
+            route = TododayDestination.TodoEdit.routeWithArgs,
+            arguments = listOf(navArgument(TododayDestination.TodoEdit.todoIdArg) { type = NavType.IntType} )
+        ) {
+            TodoEditScreen(
+                modifier = Modifier.fillMaxSize(),
+                title = stringResource(id = R.string.todo_edit),
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
             )
@@ -134,20 +151,20 @@ fun NavGraphBuilder.todoGraph(navController: NavController) {
 }
 
 fun NavGraphBuilder.ddayGraph(navController: NavController) {
-    navigation(startDestination = NavigationDestination.DDayView.route, route= NavigationDestination.DDay.route) {
-        composable(route = NavigationDestination.DDayView.route) {
+    navigation(startDestination = TododayDestination.DDayView.route, route= TododayDestination.DDay.route) {
+        composable(route = TododayDestination.DDayView.route) {
             DDayScreen(
-                navigateToDDayEdit = { navController.navigate(NavigationDestination.DDayEntry.route) }
+                navigateToDDayEdit = { navController.navigate(TododayDestination.DDayEntry.route) }
             )
         }
-        composable(route = NavigationDestination.DDayEntry.route) {
+        composable(route = TododayDestination.DDayEntry.route) {
             DDayEntryScreen(
                 modifier = Modifier.fillMaxSize(),
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() },
             )
         }
-        composable(route = NavigationDestination.DDayDetail.route) {
+        composable(route = TododayDestination.DDayDetail.route) {
             DDayDetailScreen()
         }
     }

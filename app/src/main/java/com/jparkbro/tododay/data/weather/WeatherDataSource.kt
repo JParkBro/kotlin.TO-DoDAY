@@ -5,8 +5,6 @@ import com.jparkbro.tododay.model.WeatherDTO
 
 
 interface WeatherDataSource {
-
     suspend fun getWeather(lat: String, lon: String) : WeatherDTO
     suspend fun getFirebaseData(weather: String) : FirebaseDto
-
 }

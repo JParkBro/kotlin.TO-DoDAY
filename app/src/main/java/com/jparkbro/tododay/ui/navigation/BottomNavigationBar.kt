@@ -15,10 +15,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 private const val TAG = "BottomNavigationBar"
 
 val bottomItems = listOf(
-    NavigationDestination.WeatherView,
-    NavigationDestination.TodoView,
-    NavigationDestination.DDayView,
-    NavigationDestination.SettingView,
+    TododayDestination.WeatherView,
+    TododayDestination.TodoView,
+    TododayDestination.DDayView,
+    TododayDestination.SettingView,
 )
 
 @Composable

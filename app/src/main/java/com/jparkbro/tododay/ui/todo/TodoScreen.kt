@@ -84,7 +84,7 @@ fun TodoScreen(
     modifier: Modifier = Modifier,
     adjacentMonths: Long = 100,
     navigateToTodoEdit: () -> Unit,
-//    navigateToTodoUpdate: (Int) -> Unit,
+    navigateToTodoUpdate: (Int) -> Unit,
     todoViewModel: TodoViewModel = hiltViewModel()
 ) {
     val currentDate = remember { LocalDate.now() }
@@ -104,7 +104,7 @@ fun TodoScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.add)
+                    contentDescription = stringResource(id = R.string.save)
                 )
             }
         }
@@ -207,7 +207,8 @@ fun TodoScreen(
             }
             TodoBody(
                 modifier = Modifier,
-                todoList = uiState.todoList
+                todoList = uiState.todoList,
+                onTodoClick = navigateToTodoUpdate,
             )
         }
     }
