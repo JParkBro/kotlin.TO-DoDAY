@@ -11,5 +11,5 @@ data class DDayEntity (
     val date: String,
     // TODO image 추가
 //    val image: String,
-    val state: Boolean /* true = D-Day(날짜 감소), false = 날짜수(날짜 증가) */
+    val state: Boolean /* true = D-Day(날짜 감소) = 1, false = 날짜수(날짜 증가) = 0 */
 )

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.jparkbro.tododay.data.LocalDatabase
+import com.jparkbro.tododay.data.dday.DDayDao
+import com.jparkbro.tododay.data.dday.DDayRepository
 import com.jparkbro.tododay.data.todo.TodoDao
 import com.jparkbro.tododay.data.todo.TodoDao_Impl
 import com.jparkbro.tododay.data.todo.TodoRepository
@@ -86,5 +88,17 @@ class AppModule {
     @Singleton
     fun providesTodoRepository(todoDao: TodoDao) : TodoRepository {
         return TodoRepository(todoDao)
+    }
+
+    @Provides
+    @Singleton
+    fun providesDDayDao(localDatabase: LocalDatabase) : DDayDao {
+        return localDatabase.dDayDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesDDayRepository(dDayDao: DDayDao) : DDayRepository {
+        return DDayRepository(dDayDao)
     }
 }
